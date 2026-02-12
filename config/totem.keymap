@@ -164,7 +164,7 @@
                         &sys_reset  &none       &none       &none       &none           &none       &none       &none       &none       &sys_reset
                         &none       &none       &none       &none       &none           &none       &none       &none       &none       &none
                         &none       &none       &none       &none       &none           &none       &none       &none       &none       &none
-            &bootloader                         &none       &none       &none           &none       &none       &none                               &bootloader
+            &sys_reset                          &none       &none       &none           &none       &none       &none                               &sys_reset
         >;
       };
     };
