@@ -3,13 +3,13 @@
 //                                                        ▄▀▀▀▄  ▄  ▄▀▀▀▄  ▄  ▄▀▀▀▄  █  ▄▀▀▀▄
 //                                                        █   █  █  █   █  █  █   █  █  █   █
 //                                                         ▀▀▀   █   ▀▀▀   █   ▀▀▀   ▀   ▀▀▀
-//                                                               █      ▄▄▄█▄▄▄    █   █  
+//                                                               █      ▄▄▄█▄▄▄    █   █
 //                                                               ▀      █  █  █     █▄█
 //                                                             ▀▀▀▀▀    █  █  █      ▀
 //                                                                      ▀  ▀  ▀
 //
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-       
+
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
@@ -18,12 +18,11 @@
 #include <dt-bindings/zmk/outputs.h>
 
 #define BASE 0
-#define NAV  1
-#define MED  2
-#define NUM  3
-#define SYM  4
-#define FUN  5
-#define BUT  6
+#define NAV  1  // Navigation and Media (right-hand)
+#define NUM  2  // Numbers and Symbols (left-hand)
+#define DEV  3  // Developer Hotpaths (right-hand)
+#define FUN  4  // Function Keys (left-hand)
+#define BUT  5  // Shortcuts (unused)
 
 #define HYPER &kp LS(LC(LA(LGUI)))
 
@@ -53,7 +52,7 @@
         // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
         // ┃ HYPER     ┃ Z         ┃ X         ┃ C         ┃ V         ┃ B         ┃   ┃ N         ┃ M         ┃ ,         ┃ .         ┃ /         ┃ '         ┃
         // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃ ESC       ┃ SPACE     ┃ TAB       ┃   ┃ ENTER     ┃ BSPC      ┃ DEL       ┃
+        //                                     ┃ ESC       ┃ DEV+SPACE ┃ NAV+TAB   ┃   ┃ FUN+RET   ┃ NUM+BSPC  ┃ DEL       ┃
         //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
@@ -61,91 +60,70 @@
                         &kp Q       &kp W       &kp E       &kp R       &kp T           &kp Y       &kp U       &kp I       &kp O       &kp P
                         &mt LGUI A  &mt LALT S  &mt LCTRL D &mt LSHFT F &kp G           &kp H       &mt RSHFT J &mt RCTRL K &mt RALT L  &mt RGUI SEMI
             HYPER       &kp Z       &kp X       &kp C       &kp V       &kp B           &kp N       &kp M       &kp COMMA   &kp DOT     &kp FSLH    &kp SQT
-                                                &lt MED ESC &lt NAV SPACE &kp TAB       &lt SYM RET &lt NUM BSPC &lt FUN DEL
+                                                &kp ESC     &lt DEV SPACE &lt NAV TAB   &lt FUN RET &lt NUM BSPC &kp DEL
         >;
       };
 
-      nav_layer {
-        display-name = "Nav";
+      nav_and_media_layer {
+        display-name = "Nav/Media";
         //             ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓   ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-        //             ┃           ┃           ┃           ┃           ┃           ┃   ┃ REDO      ┃ PASTE     ┃ COPY      ┃ CUT       ┃ UNDO      ┃
+        //             ┃           ┃           ┃           ┃           ┃           ┃   ┃ NEW WIN   ┃ PREV      ┃ VOL-      ┃ VOL+      ┃ NEXT      ┃
         //             ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫
-        //             ┃ SUPER     ┃ ALT       ┃ CTRL      ┃ SHIFT     ┃           ┃   ┃ ←         ┃ ↓         ┃ ↑         ┃ →         ┃ CAPS WRD  ┃
+        //             ┃ SUPER     ┃ ALT       ┃ CTRL      ┃ SHIFT     ┃           ┃   ┃ NEW TAB   ┃ ←         ┃ ↓         ┃ ↑         ┃ →         ┃
         // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
-        // ┃           ┃           ┃           ┃           ┃           ┃           ┃   ┃ INSERT    ┃ PG DOWN   ┃ PG UP     ┃ HOME      ┃ END       ┃           ┃
+        // ┃           ┃           ┃           ┃           ┃           ┃           ┃   ┃           ┃ UNDO      ┃ CUT       ┃ COPY      ┃ PASTE     ┃           ┃
         // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢 ┃           ┃   ┃ ENTER     ┃ BSPC      ┃ DEL       ┃
+        //                                     ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢  ┃           ┃   ┃ REFRESH   ┃ PLAY      ┃ MUTE      ┃
         //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
 
-                        &none       &none       &none       &none       &none           &kp LS(LG(Z)) &kp LG(V) &kp LG(C)   &kp LG(X)   &kp LG(Z)
-                        &kp LGUI    &kp LALT    &kp LCTRL   &kp LSHFT   &none           &kp LEFT    &kp DOWN    &kp UP      &kp RIGHT   &caps_word
-            &none       &none       &none       &none       &none       &none           &kp INS     &kp PG_DN   &kp PG_UP   &kp HOME    &kp END     &none
-                                                &none       &none       &none           &kp RET     &kp BSPC    &kp DEL
+                        &none       &none       &none       &none       &none           &kp LG(N)   &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT
+                        &kp LGUI    &kp LALT    &kp LCTRL   &kp LSHFT   &none           &kp LG(T)   &kp LEFT    &kp DOWN     &kp UP       &kp RIGHT
+            &none       &none       &none       &none       &none       &none           &none       &kp LG(Z)   &kp LG(X)    &kp LG(C)    &kp LG(V)   &none
+                                                &none       &none       &none           &kp LG(R)   &kp C_PP    &kp C_MUTE
         >;
       };
 
-      med_layer {
-        display-name = "Media";
+      num_and_sym_layer {
+        display-name = "Num/Sym";
         //             ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓   ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-        //             ┃           ┃           ┃           ┃           ┃           ┃   ┃           ┃           ┃           ┃           ┃           ┃
+        //             ┃ -         ┃ 7         ┃ 8         ┃ 9         ┃           ┃   ┃           ┃           ┃           ┃           ┃           ┃
         //             ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫
-        //             ┃ SUPER     ┃ ALT       ┃ CTRL      ┃ SHIFT     ┃           ┃   ┃ BUT LAY   ┃ PREV      ┃ VOL-      ┃ VOL+      ┃ NEXT      ┃
+        //             ┃ =         ┃ 4         ┃ 5         ┃ 6         ┃           ┃   ┃           ┃ SHIFT     ┃ CTRL      ┃ ALT       ┃ SUPER     ┃
         // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
-        // ┃           ┃           ┃           ┃           ┃           ┃           ┃   ┃ BT CLEAR  ┃ BT 0      ┃ BT 1      ┃ BT 2      ┃ BT 3      ┃           ┃
+        // ┃           ┃           ┃ 1         ┃ 2         ┃ 3         ┃           ┃   ┃           ┃           ┃           ┃           ┃           ┃           ┃
         // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢 ┃           ┃           ┃   ┃ STOP      ┃ PLAY      ┃ MUTE      ┃
+        //                                     ┃ .         ┃ 0         ┃           ┃   ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢  ┃           ┃
         //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
 
-                        &none       &none       &none       &none       &none           &none       &none       &none       &none       &none
-                        &kp LGUI    &kp LALT    &kp LCTRL   &kp LSHFT   &none           &to BUT     &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT
-            &none       &none       &none       &none       &none       &none           &bt BT_CLR  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &none
-                                                &none       &none       &none           &kp C_STOP  &kp C_PP    &kp C_MUTE
+                        &kp MINUS   &kp N7      &kp N8      &kp N9      &none           &none       &none       &none       &none       &none
+                        &kp EQUAL   &kp N4      &kp N5      &kp N6      &none           &none       &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
+            &none       &none       &kp N1      &kp N2      &kp N3      &none           &none       &none       &none       &none       &none       &none
+                                                &kp DOT     &kp N0      &none           &none       &none       &none
         >;
       };
 
-      num_layer {
-        display-name = "Numbers";
+      dev_layer {
+        display-name = "Dev";
         //             ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓   ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-        //             ┃ [         ┃ 7         ┃ 8         ┃ 9         ┃ ]         ┃   ┃           ┃           ┃           ┃           ┃           ┃
+        //             ┃           ┃           ┃           ┃           ┃           ┃   ┃           ┃ {         ┃ }         ┃ `         ┃ =         ┃
         //             ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫
-        //             ┃ ;         ┃ 4         ┃ 5         ┃ 6         ┃ =         ┃   ┃           ┃ SHIFT     ┃ CTRL      ┃ ALT       ┃ SUPER     ┃
+        //             ┃ SUPER     ┃ ALT       ┃ CTRL      ┃ SHIFT     ┃           ┃   ┃ _         ┃ [         ┃ ]         ┃ '         ┃ $         ┃
         // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
-        // ┃           ┃ `         ┃ 1         ┃ 2         ┃ 3         ┃ \         ┃   ┃           ┃           ┃           ┃           ┃           ┃           ┃
+        // ┃           ┃           ┃           ┃           ┃           ┃           ┃   ┃           ┃ &         ┃ |         ┃ *         ┃           ┃ SHIFT TAB ┃
         // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃ .         ┃ 0         ┃ -         ┃   ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢 ┃           ┃
+        //                                     ┃           ┃           ┃           ┃   ┃ @         ┃ (         ┃ )         ┃
         //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
 
-                        &kp LBKT    &kp N7      &kp N8      &kp N9      &kp RBKT        &none       &none       &none       &none       &none
-                        &kp SEMI    &kp N4      &kp N5      &kp N6      &kp EQUAL       &none       &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
-            &none       &kp GRAVE   &kp N1      &kp N2      &kp N3      &kp BSLH        &none       &none       &none       &none       &none       &none
-                                                &kp DOT     &kp N0      &kp MINUS       &none       &none       &none
-        >;
-      };
-
-      sym_layer {
-        display-name = "Symbols";
-        //             ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓   ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
-        //             ┃ {         ┃ &         ┃ *         ┃ (         ┃ }         ┃   ┃           ┃           ┃           ┃           ┃           ┃
-        //             ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫
-        //             ┃ :         ┃ $         ┃ %         ┃ ^         ┃ +         ┃   ┃           ┃ SHIFT     ┃ CTRL      ┃ ALT       ┃ SUPER     ┃
-        // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
-        // ┃           ┃ ~         ┃ !         ┃ @         ┃ #         ┃ |         ┃   ┃           ┃           ┃           ┃           ┃           ┃           ┃
-        // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃ (         ┃ )         ┃ _         ┃   ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢 ┃           ┃           ┃
-        //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        bindings = <
-        // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
-
-                        &kp LBRC    &kp AMPS    &kp STAR    &kp LPAR    &kp RBRC        &none       &none       &none       &none       &none
-                        &kp COLON   &kp DLLR    &kp PRCNT   &kp CARET   &kp PLUS        &none       &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
-            &none       &kp TILDE   &kp EXCL    &kp AT      &kp HASH    &kp PIPE        &none       &none       &none       &none       &none       &none
-                                                &kp LPAR    &kp RPAR    &kp UNDER       &none       &none       &none
+                        &none       &none       &none       &none       &none           &none         &kp LS(LBKT) &kp LS(RBKT) &kp GRAVE  &kp EQUAL
+                        &kp LGUI    &kp LALT    &kp LCTRL   &kp LSHFT   &none           &kp LS(MINUS) &kp LBKT     &kp RBKT     &kp SQT    &kp LS(N4)
+            &none       &none       &none       &none       &none       &none           &none         &kp LS(N7)   &kp LS(BSLH) &kp LS(N8) &none     &kp LS(TAB)
+                                                &none       &none       &none           &kp LS(N2)    &kp LS(N9)   &kp LS(N0)
         >;
       };
 
@@ -154,19 +132,19 @@
         //             ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓   ┏━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┓
         //             ┃ F12       ┃ F7        ┃ F8        ┃ F9        ┃ PRNT SCRN ┃   ┃           ┃           ┃           ┃           ┃           ┃
         //             ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫
-        //             ┃ F11       ┃ F4        ┃ F5        ┃ F6        ┃ BUT LAY   ┃   ┃           ┃ SHIFT     ┃ CTRL      ┃ ALT       ┃ SUPER     ┃
+        //             ┃ F11       ┃ F4        ┃ F5        ┃ F6        ┃           ┃   ┃           ┃ SHIFT     ┃ CTRL      ┃ ALT       ┃ SUPER     ┃
         // ┏━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┓
         // ┃           ┃ F10       ┃ F1        ┃ F2        ┃ F3        ┃           ┃   ┃           ┃           ┃           ┃           ┃           ┃           ┃
         // ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┫   ┣━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
-        //                                     ┃           ┃ SPACE     ┃ TAB       ┃   ┃           ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢 ┃
+        //                                     ┃           ┃ SPACE     ┃ TAB       ┃   ┃           ┃           ┃ 🁢🁢🁢🁢🁢🁢🁢🁢🁢  ┃
         //                                     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛   ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┛
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
 
                         &kp F12     &kp F7      &kp F8      &kp F9      &kp PSCRN       &none       &none       &none       &none       &none
-                        &kp F11     &kp F4      &kp F5      &kp F6      &to BUT         &none       &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
-            &trans      &kp F10     &kp F1      &kp F2      &kp F3      &none           &none       &none       &none       &none       &none       &none
-                                                &trans      &kp SPACE   &kp TAB         &none       &none       &none
+                        &kp F11     &kp F4      &kp F5      &kp F6      &none           &none       &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
+            &none       &kp F10     &kp F1      &kp F2      &kp F3      &none           &none       &none       &none       &none       &none       &none
+                                                &none       &kp SPACE   &kp TAB         &none       &none       &none
         >;
       };
 
@@ -184,9 +162,9 @@
         bindings = <
         // ╷           ╷           ╷           ╷           ╷           ╷           ╷   ╷           ╷           ╷           ╷           ╷           ╷           ╷
 
-                        &kp LG(Z)   &kp LG(X)   &kp LG(C)   &kp LG(V)   &kp LS(LG(Z))   &kp LS(LG(Z)) &kp LG(V) &kp LG(C)   &kp LG(X)   &kp LG(Z)
+                        &kp LG(Z)   &kp LG(X)   &kp LG(C)   &kp LG(V)   &kp LS(LG(Z))   &kp LS(LG(Z)) &kp LG(V)   &kp LG(C)   &kp LG(X)   &kp LG(Z)
                         &kp LGUI    &kp LALT    &kp LCTRL   &kp LSHFT   &to BASE        &to BASE      &kp RSHFT   &kp RCTRL   &kp RALT    &kp RGUI
-            &soft_off   &kp LG(Z)   &kp LG(X)   &kp LG(C)   &kp LG(V)   &kp LS(LG(Z))   &kp LS(LG(Z)) &kp LG(V) &kp LG(C)   &kp LG(X)   &kp LG(Z)   &soft_off
+            &soft_off   &kp LG(Z)   &kp LG(X)   &kp LG(C)   &kp LG(V)   &kp LS(LG(Z))   &kp LS(LG(Z)) &kp LG(V)   &kp LG(C)   &kp LG(X)   &kp LG(Z)   &soft_off
                                                 &mkp MCLK   &mkp LCLK   &mkp RCLK       &mkp RCLK   &mkp LCLK   &mkp MCLK
         >;
       };
