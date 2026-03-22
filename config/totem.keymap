@@ -94,10 +94,10 @@
         //                                                 ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛   ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛
         bindings = <
         // ╷               ╷               ╷               ╷               ╷               ╷               ╷   ╷               ╷               ╷               ╷               ╷               ╷               ╷
-                            &BT_CLR         &BT_SEL 0       &BT_SEL 0       &BT_SEL 0       &none               &kp LC(LS(N4))  &kp C_PREV      &kp C_VOL_DN    &kp C_VOL_UP    &kp C_NEXT
-                            &LALT           &kp LSHFT       &kp LGUI        &kp LCTRL       &none               &kp LC(LS(N5))  &kp LEFT        &kp DOWN        &kp UP          &kp RIGHT
+                            &bt BT_CLR      &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &none               &kp LC(LS(N4))  &kp C_PREV      &kp C_VOL_DN    &kp C_VOL_UP    &kp C_NEXT
+                            &kp LALT        &kp LSHFT       &kp LGUI        &kp LCTRL       &none               &kp LC(LS(N5))  &kp LEFT        &kp DOWN        &kp UP          &kp RIGHT
                             &none           &none           &none           &none           &none               &none           &kp LC(Z)       &kp LC(X)       &kp LC(C)       &kp LC(V)
-            &BT_CLR_ALL                                     &none           &none           &none               &kp LC(R)       &kp C_PP        &kp C_MUTE                                      &kp LC(LG(Q))
+            &bt BT_CLR_ALL                                  &none           &none           &none               &kp LC(R)       &kp C_PP        &kp C_MUTE                                      &kp LC(LG(Q))
         >;
       };
 

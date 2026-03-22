@@ -15,19 +15,3 @@
         , <&xiao_d 8 GPIO_ACTIVE_HIGH>
         ;
 };
-
-/*
- * XIAO nRF52840 onboard LED assignments (all LEDs are active-low):
- *   led0 = red   (P0.26) — unused
- *   led1 = green (P0.30) — battery level indicator (event-triggered, not continuous)
- *   led2 = blue  (P0.06) — unused (see note below)
- *
- * zmk,ble-status-led is intentionally omitted. If it holds the LED solid while
- * connected it would drain the battery continuously. Battery level indication
- * via led1 is safe — it only fires on USB connect or when triggered by a key.
- */
-/ {
-    chosen {
-        zmk,battery-level-status-led = &led1;
-    };
-};
