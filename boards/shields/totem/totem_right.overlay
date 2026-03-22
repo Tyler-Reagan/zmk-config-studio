@@ -19,3 +19,16 @@
         , <&xiao_d 4 GPIO_ACTIVE_HIGH>
         ;
 };
+
+/*
+ * XIAO nRF52840 onboard LED assignments (all LEDs are active-low):
+ *   led1 = green (P0.30) — battery level indicator
+ *
+ * The right half is a BLE peripheral (connects to left, not the host directly),
+ * so only battery level indication is relevant here.
+ */
+/ {
+    chosen {
+        zmk,battery-level-status-led = &led1;
+    };
+};
