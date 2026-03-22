@@ -50,14 +50,14 @@
         // ┏━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┓
         // ┃ HYPER         ┃ Z             ┃ X             ┃ C             ┃ V             ┃ B             ┃   ┃ N             ┃ M             ┃ ,             ┃ .             ┃ /             ┃ '             ┃
         // ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛
-        //                                                 ┃ ESC           ┃ NAV+TAB       ┃ DEV+SPACE     ┃   ┃ BSPC          ┃ NUM+RET       ┃ FUN+DEL       ┃
+        //                                                 ┃ ESC           ┃ SYS+TAB       ┃ DEV+SPACE     ┃   ┃ BSPC          ┃ NUM+RET       ┃ FUN+DEL       ┃
         //                                                 ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛   ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛
         bindings = <
         // ╷               ╷               ╷               ╷               ╷               ╷               ╷   ╷               ╷               ╷               ╷               ╷               ╷               ╷
                              &kp Q          &kp W           &kp E           &kp R           &kp T               &kp Y           &kp U           &kp I           &kp O           &kp P
                              &kp A          &mt LGUI S      &mt LCTRL D     &mt LSHFT F     &kp G               &kp H           &mt RSHFT J     &mt RCTRL K     &mt RGUI L      &kp SEMI
                              &kp Z          &kp X           &kp C           &kp V           &kp B               &kp N           &kp M           &kp COMMA       &kp DOT         &kp FSLH
-            HYPER                                           &kp ESC         &lt NAV TAB     &lt DEV SPACE       &kp BSPC        &lt NUM RET     &lt FUN DEL                                     &kp SQT
+            HYPER                                           &kp ESC         &lt SYS TAB     &lt DEV SPACE       &kp BSPC        &lt NUM RET     &lt FUN DEL                                     &kp SQT
         >;
       };
 
@@ -84,20 +84,20 @@
       sys_layer {
         display-name = "Sys";
         //                 ┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓   ┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
-        //                 ┃               ┃               ┃               ┃               ┃               ┃   ┃ SCREENSHOT    ┃ PREV          ┃ VOL-          ┃ VOL+          ┃ NEXT          ┃
+        //                 ┃ BT_CLR        ┃ BT_SEL 0      ┃ BT_SEL 1      ┃ BT_SEL 2      ┃               ┃   ┃ SCREENSHOT    ┃ PREV          ┃ VOL-          ┃ VOL+          ┃ NEXT          ┃
         //                 ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫
-        //                 ┃               ┃ ALT           ┃               ┃ GUI           ┃               ┃   ┃ NEW TAB       ┃ ←             ┃ ↓             ┃ ↑             ┃ →             ┃
+        //                 ┃ ALT           ┃ SHIFT         ┃ GUI           ┃ CTRL          ┃               ┃   ┃ SCREENSHOT+   ┃ ←             ┃ ↓             ┃ ↑             ┃ →             ┃
         // ┏━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┓
-        // ┃               ┃               ┃               ┃               ┃               ┃               ┃   ┃ UNDO          ┃ COPY          ┃ PASTE         ┃ CUT           ┃               ┃ LOCK SCREEN   ┃
+        // ┃ BT_CLR_ALL    ┃               ┃               ┃               ┃               ┃               ┃   ┃ UNDO          ┃ COPY          ┃ PASTE         ┃ CUT           ┃               ┃ LOCK SCREEN   ┃
         // ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛
         //                                                 ┃               ┃               ┃               ┃   ┃ REFRESH       ┃ PLAY          ┃ MUTE          ┃
         //                                                 ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛   ┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┛
         bindings = <
         // ╷               ╷               ╷               ╷               ╷               ╷               ╷   ╷               ╷               ╷               ╷               ╷               ╷               ╷
-                            &none           &none           &none           &none           &none               &kp LC(LS(N4))  &kp C_PREV      &kp C_VOL_DN    &kp C_VOL_UP    &kp C_NEXT
-                            &none           &kp LALT        &none           &kp LGUI        &none               &kp LC(T)       &kp LEFT        &kp DOWN        &kp UP          &kp RIGHT
+                            &BT_CLR         &BT_SEL 0       &BT_SEL 0       &BT_SEL 0       &none               &kp LC(LS(N4))  &kp C_PREV      &kp C_VOL_DN    &kp C_VOL_UP    &kp C_NEXT
+                            &LALT           &kp LSHFT       &kp LGUI        &kp LCTRL       &none               &kp LC(LS(N5))  &kp LEFT        &kp DOWN        &kp UP          &kp RIGHT
                             &none           &none           &none           &none           &none               &none           &kp LC(Z)       &kp LC(X)       &kp LC(C)       &kp LC(V)
-            &none                                           &none           &none           &none               &kp LC(R)       &kp C_PP        &kp C_MUTE                                      &kp LC(LG(Q))
+            &BT_CLR_ALL                                     &none           &none           &none               &kp LC(R)       &kp C_PP        &kp C_MUTE                                      &kp LC(LG(Q))
         >;
       };
 
