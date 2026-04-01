@@ -1,185 +1,188 @@
-# ZMK Config — TOTEM Split Keyboard
+# ZMK Config — TOTEM (No-Dongle)
 
-Personal ZMK firmware for the [TOTEM](https://github.com/GEIGEIGEIST/TOTEM) — a 38-key column-staggered wireless split keyboard running on two [Seeed XIAO nRF52840](https://wiki.seeedstudio.com/XIAO-nRF52840/) microcontrollers.
+Personal ZMK firmware for the [TOTEM](https://github.com/GEIGEIGEIST/TOTEM) — a 38-key column-staggered wireless split keyboard using two [Seeed XIAO nRF52840](https://wiki.seeedstudio.com/XIAO-nRF52840/) microcontrollers.
 
-- **Hardware files & build guide:** [GEIGEIGEIST/TOTEM](https://github.com/GEIGEIGEIST/TOTEM)
-- **QMK/Vial config (wired):** see `qmk-config-totem/` — same layout, wired TRRS variant
-- **Firmware source:** [zmkfirmware/zmk](https://github.com/zmkfirmware/zmk) (`main` branch)
+**This repo is for the no-dongle setup**: the left half connects directly to your computer via USB and acts as the BLE central. Use this when you want a simple two-piece wireless keyboard with ZMK Studio support.
+
+> **Using a dongle?** See [zmk-dongle-screen](https://github.com/Tyler-Reagan/zmk-dongle-screen) — a separate repo for the three-piece dongle setup (left + right as BLE peripherals, XIAO dongle as USB central with status display).
 
 ---
 
-<details>
-<summary><strong>Building firmware</strong></summary>
+## Repo structure
 
-Firmware is built automatically by GitHub Actions on every push to `main`. The workflow produces two UF2 artifacts:
+```
+config/
+  totem.keymap          ← keymap (edit this)
+  totem_left.conf       ← left half config (bootloader support)
+  totem_right.conf      ← right half config (bootloader support)
+  west.yml              ← ZMK west manifest
 
-| Artifact | Half | Notes |
-|---|---|---|
-| `xiao_ble-totem_left` | Left (central) | Built with ZMK Studio + USB UART snippet |
-| `xiao_ble-totem_right` | Right (peripheral) | Standard build |
-| `xiao_ble-settings_reset` | Either | Clears EEPROM / BLE bond data |
+boards/shields/totem/   ← TOTEM keyboard shield definition
+  totem.dtsi            ← base matrix / kscan
+  totem-layouts.dtsi    ← physical key positions (ZMK Studio)
+  totem_left.overlay    ← left column GPIO assignments
+  totem_right.overlay   ← right column GPIO assignments
+  Kconfig.shield        ← shield Kconfig symbols
+  Kconfig.defconfig     ← ZMK split role defaults
+  totem.zmk.yml         ← ZMK Studio shield metadata
 
-The build matrix is defined in [`build.yaml`](build.yaml).
-
-### Building locally
-
-```sh
-# Install west
-pip3 install west
-
-# Bootstrap ZMK workspace
-west init -l config
-west update
-
-# Build left half
-west build -s zmk/app -b xiao_ble \
-  -- -DSHIELD=totem_left \
-     -DZMK_CONFIG=$(pwd)/config \
-     -DSNIPPET=studio-rpc-usb-uart \
-     -DCONFIG_ZMK_STUDIO=y \
-     -DCONFIG_ZMK_STUDIO_LOCKING=n
-
-# Build right half
-west build -s zmk/app -b xiao_ble \
-  -- -DSHIELD=totem_right \
-     -DZMK_CONFIG=$(pwd)/config
+build.yaml              ← GitHub Actions build matrix
+Makefile                ← workflow helper (requires gh CLI)
+.github/workflows/
+  build.yml             ← GitHub Actions build workflow
 ```
 
-</details>
+---
+
+## Artifacts
+
+| Artifact | Shield | Role |
+|---|---|---|
+| `totem_left` | `totem_left` | Left half — USB central, ZMK Studio enabled |
+| `totem_right` | `totem_right` | Right half — BLE peripheral |
+| `settings_reset` | `settings_reset` | Clears all BLE bond data |
 
 ---
 
-<details>
-<summary><strong>Flashing</strong></summary>
+## Makefile workflow
 
-The XIAO nRF52840 appears as a USB mass storage device named **`XIAO-SENSE`** (or **`XIAO`**) in bootloader mode.
+Requires the [GitHub CLI](https://cli.github.com/) (`gh`). ZMK firmware is built in GitHub Actions — the Makefile wraps `gh` commands for convenience.
 
-**Enter bootloader mode**
-1. Double-tap the reset button on the XIAO — the drive mounts automatically.
-2. Or: hold the boot button while plugging in USB.
+```
+make help          Show all targets and workflow summary
+make build         Trigger a GitHub Actions build
+make status        List recent build runs (latest 5)
+make download      Download firmware artifacts → firmware/
+make flash-left    Copy left UF2 to mounted XIAO bootloader drive
+make flash-right   Copy right UF2 to mounted XIAO bootloader drive
+```
 
-**Flash**
-Drag-drop the UF2 onto the mounted drive. The board reboots automatically when the copy completes.
+### Typical workflow
 
-> Flash **one half at a time** with the other disconnected.
+```sh
+# 1. Edit your keymap
+vim config/totem.keymap
 
-**First-time pairing**
-1. Flash both halves.
-2. Power on both. The right half advertises to the left; they pair automatically.
-3. The left half then advertises to the host. Open Bluetooth settings and pair **TOTEM**.
+# 2. Trigger a build
+make build
 
-**Reset bonds** (if halves stop communicating or host won't reconnect)
-1. Flash `xiao_ble-settings_reset.uf2` to both halves.
-2. Re-flash the normal firmware to both halves.
-3. Re-pair from scratch.
+# 3. Check when it finishes
+make status
 
-</details>
+# 4. Download artifacts once the build succeeds
+make download
+# → firmware/totem_left/zmk.uf2
+# → firmware/totem_right/zmk.uf2
+
+# 5. Flash each half (double-tap reset first to enter bootloader)
+make flash-left
+make flash-right
+```
+
+> The `BOOT_LEFT` and `BOOT_RIGHT` variables default to `/Volumes/XIAO-SENSE`. Override if your drive mounts under a different name:
+> ```sh
+> make flash-left BOOT_LEFT=/Volumes/XIAO
+> ```
 
 ---
 
-<details>
-<summary><strong>ZMK Studio</strong></summary>
+## Flashing
 
-[ZMK Studio](https://zmk.studio/) enables live keymap editing over USB without reflashing.
+### Enter bootloader mode
 
-- Connect the **left half** via USB.
+**Double-tap the reset button** on the XIAO — the drive mounts as `XIAO-SENSE` (or `XIAO`) automatically. Or hold the boot button while plugging in USB.
+
+Flash one half at a time with the other disconnected (or powered off).
+
+### First-time setup
+
+1. Flash `settings_reset` to both halves to clear any stale bond data.
+2. Flash `totem_left` to the left half.
+3. Flash `totem_right` to the right half.
+4. Power on both halves. The right half (peripheral) advertises to the left; they pair automatically.
+5. The left half then advertises to your computer. Open Bluetooth settings and pair **TOTEM**.
+
+### Subsequent updates
+
+Just reflash both halves with updated firmware — bond data is preserved in EEPROM.
+
+---
+
+## ZMK Studio
+
+[ZMK Studio](https://zmk.studio/) lets you remap keys live over USB without reflashing.
+
+- Connect the **left half** to your computer via USB.
 - Open [zmk.studio](https://zmk.studio/) in a Chromium-based browser.
-- The TOTEM should appear automatically.
-- Changes are saved to the keyboard's flash — no compile step needed.
+- **TOTEM** appears automatically.
+- Changes are written to the keyboard's flash instantly.
 
-> ZMK Studio only connects to the left (central) half. The right half does not expose the Studio interface.
+Studio locking is disabled — no unlock sequence required. Studio changes persist across power cycles but are overwritten on the next firmware flash.
 
-Studio locking is **disabled** (`CONFIG_ZMK_STUDIO_LOCKING=n`) so no unlock sequence is required.
-
-</details>
+> ZMK Studio connects to the **left half only**. The right half doesn't expose the Studio interface.
 
 ---
 
-<details>
-<summary><strong>Keymap</strong></summary>
+## Keymap
 
-Six layers. Layer-tap on all three thumb keys per side.
+Six layers. Source: [`config/totem.keymap`](config/totem.keymap).
 
-| # | Name | Primary hand | Activation |
+| # | Layer | Hand | Activation |
 |---|---|---|---|
 | 0 | **BASE** | Both | Default |
-| 1 | **DEV** | Right | Hold right-thumb inner (`DEV/SPC`) |
-| 2 | **SYS** | Right | Hold right-thumb middle (`SYS/TAB`) |
-| 3 | **NUM** | Left | Hold left-thumb middle (`NUM/ENT`) |
-| 4 | **FUN** | Left | Hold left-thumb inner (`FUN/DEL`) |
-| 5 | **BOOT** | Both | Assign via ZMK Studio or add a combo |
+| 1 | **DEV** | Right | Hold `DEV/SPC` (right thumb inner) |
+| 2 | **SYS** | Right | Hold `SYS/TAB` (right thumb middle) |
+| 3 | **NUM** | Left | Hold `NUM/ENT` (left thumb middle) |
+| 4 | **FUN** | Left | Hold `FUN/DEL` (left thumb inner) |
+| 5 | **BOOT** | Both | Assign via ZMK Studio or combo |
 
-**BASE layer highlights**
-- Home-row mods: `GUI/S` `CTRL/D` `SHIFT/F` (left), `SHIFT/J` `CTRL/K` `GUI/L` (right)
-- Left outer pinky: `HYPER` (Ctrl+Shift+Alt+GUI)
-- Right outer pinky: `'`
-- Thumbs (left→right): `ESC` · `SYS/TAB` · `DEV/SPC` ‖ `BSPC` · `NUM/ENT` · `FUN/DEL`
+**BASE** — QWERTY with home-row mods (`GUI/S` `CTRL/D` `SHIFT/F` left; `SHIFT/J` `CTRL/K` `GUI/L` right). Left outer pinky: `HYPER` (Ctrl+Shift+Alt+GUI). Right outer pinky: `'`. All three thumbs per side are layer-tap.
 
-**DEV** — developer symbols on the right hand (`-{}` `` ` `` `=_[]'$&|*`), modifiers on the left, `@()` on right thumbs, `Shift+Tab` on right outer pinky.
+**DEV** — Developer symbols on the right hand: `-{}` `` ` `` `=` `_[]'$&|*`. Left hand: modifiers. Right thumbs: `@()`. Right outer pinky: `Shift+Tab`.
 
-**SYS** — navigation and media on the right hand (arrows, vol, prev/next, screenshot, new tab, undo/cut/copy/paste), refresh/play/mute on right thumbs, lock screen on right outer pinky.
+**SYS** — Navigation and media on the right: arrows, volume, prev/next/play/mute, screenshots, refresh, undo/cut/copy/paste. Left outer pinky: clear all BT bonds. Right outer pinky: lock screen.
 
-**NUM** — number pad layout on the left hand (`-789` / `=456` / `_123`, `.0` on thumbs), right-hand modifiers on the right.
+**NUM** — Numpad on the left: `-789` / `=456` / `123`, `.0` on thumbs. Right hand: modifiers.
 
-**FUN** — function keys on the left hand (`F12 F7-F9` / `F11 F4-F6` / `F10 F1-F3`), `SPC/TAB` on left thumbs, right-hand modifiers on the right.
+**FUN** — Function keys on the left: `F12 F7–F9` / `F11 F4–F6` / `F10 F1–F3`. `SPC`/`TAB` on thumbs. Right hand: modifiers.
 
-**BOOT** — `QK_RBT` (soft reset) on top-row outer keys, `QK_BOOT` (bootloader) on bottom-row outer keys. Access this layer by assigning a key or combo via ZMK Studio.
-
-</details>
+**BOOT** — `&sys_reset` (soft reset) on top-row outer keys, `&bootloader` on bottom-row outer keys. Activate via ZMK Studio or a keymap combo.
 
 ---
 
-<details>
-<summary><strong>BLE profiles</strong></summary>
+## BLE profiles
 
-ZMK supports up to 5 Bluetooth profiles, allowing the keyboard to pair with multiple hosts and switch between them.
-
-Default bindings in the keymap (assign via ZMK Studio if needed):
+ZMK supports up to 5 Bluetooth profiles for pairing with multiple hosts.
 
 | Binding | Action |
 |---|---|
-| `&bt BT_SEL 0` | Switch to profile 0 |
-| `&bt BT_SEL 1` | Switch to profile 1 |
-| `&bt BT_SEL 2` | Switch to profile 2 |
+| `&bt BT_SEL 0/1/2` | Switch to profile 0, 1, or 2 |
 | `&bt BT_CLR` | Clear bond on active profile |
-| `&bt BT_CLR_ALL` | Clear all bonds |
+| `&bt BT_CLR_ALL` | Clear all bonds (on SYS layer, left outer pinky) |
 
-After switching to an unconnected profile, the left half begins advertising. Open Bluetooth on the new host and pair **TOTEM**.
-
-</details>
+After switching to an unpaired profile, the left half begins advertising. Pair **TOTEM** on the new host via Bluetooth settings.
 
 ---
 
-<details>
-<summary><strong>Onboard LED indicators</strong></summary>
+## FAQ
 
-The XIAO nRF52840 has a 3-colour onboard LED (active-low GPIO). Current configuration:
+**Double-tap reset isn't working.**
+The firmware must be flashed at least once for double-tap detection to work (it's implemented in ZMK, not the bootloader). On a fresh XIAO with no firmware, hold the boot button while plugging in USB to enter bootloader manually for the first flash.
 
-| LED | Colour | GPIO | Role |
-|---|---|---|---|
-| `led0` | Red | P0.26 | Unused |
-| `led1` | Green | P0.30 | Battery level status (see below) |
-| `led2` | Blue | P0.06 | Unused (see note) |
+**The halves aren't communicating after reflashing.**
+The right half may have a stale BLE bond. Flash `settings_reset` to both halves, then reflash normal firmware and re-pair.
 
-**Battery level (`led1` — green)**
-When `CONFIG_ZMK_BATTERY_REPORTING=y` is enabled, the keyboard reports battery percentage to the host over BLE — visible in macOS menu bar / Windows system tray without any LED activity.
+**ZMK Studio shows "Keyboard Locked".**
+This shouldn't happen — Studio locking is disabled in this config (`CONFIG_ZMK_STUDIO_LOCKING=n`). If it does, reflash `totem_left`.
 
-The `zmk,battery-level-status-led = &led1` chosen property is set in both overlays, ready to activate visual battery feedback. To enable LED blink indication, find the correct ZMK Kconfig symbol (search ZMK's `app/Kconfig` for `BATTERY_LEVEL`) and add it to the relevant `.conf` file. `CONFIG_ZMK_BATTERY_LEVEL_STATUS=y` is the likely name but has not been verified against the current ZMK main branch and has been left out to avoid breaking the build.
+**How do I switch between this setup and the dongle setup?**
+They're completely separate repos that produce different firmware. Flash from whichever repo matches your current hardware setup. The bond data is per-device — you may want to run `settings_reset` when switching modes.
 
-**BLE status (`led2` — blue)**
-`zmk,ble-status-led` is intentionally omitted. The "solid on while connected" state would drain the battery continuously. It can be re-added to `totem_left.overlay` if ZMK's implementation is confirmed to be pulse-on-event rather than continuous:
+**GitHub Actions is failing.**
+Check the Actions tab in the repo. Common causes: a keymap syntax error in `totem.keymap`, or a ZMK API change on `main`. Check the [ZMK changelog](https://zmk.dev/docs/changelog) for breaking changes.
 
-```devicetree
-/ {
-    chosen {
-        zmk,ble-status-led = &led2;
-    };
-};
-```
+**Where do I find the built firmware if I don't use `make download`?**
+Go to the **Actions** tab in your GitHub repo → select the latest successful run → scroll to **Artifacts** at the bottom of the run summary.
 
-Expected behaviour if re-enabled:
-- **Fast blink** — advertising (searching for host)
-- **Solid** — connected *(only safe if event-triggered, not continuous)*
-- **Off** — disconnected, not advertising
-
-</details>
+**Do I need to redo first-time setup after every reflash?**
+No. Bond data is stored in EEPROM and survives firmware updates. Only reflash `settings_reset` if the halves stop pairing with each other or if you're switching from the dongle setup.
